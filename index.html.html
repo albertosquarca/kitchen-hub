@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#101010">
+<title>Kitchen Hub</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#111;color:#f5f5f3;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+body{padding:22px 17px 34px}
+.wrap{max-width:900px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:center;margin:3px 0 23px}
+.brand{font-size:12px;letter-spacing:3px;font-weight:700;color:#c8c8c4}
+.dot{width:7px;height:7px;background:#a8b89d;border-radius:50%;display:inline-block;margin-right:7px}
+.homebtn{background:#252525;color:#e8e8e4;border:1px solid #444;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:600}
+.hero{background:#1b1b1b;border:1px solid #303030;border-radius:22px;padding:22px 17px 19px;margin-bottom:14px}
+.topline{display:flex;justify-content:space-between;align-items:center;color:#aaa;font-size:11px;letter-spacing:1.6px;text-transform:uppercase}
+.weather{font-size:13px;letter-spacing:0;color:#ddd;text-transform:none}
+.flipclock{display:flex;align-items:center;justify-content:center;gap:7px;margin:17px 0 13px}
+.digit{position:relative;flex:1;max-width:145px;height:clamp(112px,25vw,190px);background:#090909;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:clamp(68px,16vw,132px);font-weight:300;letter-spacing:-5px;font-variant-numeric:tabular-nums;box-shadow:inset 0 1px 0 #292929,0 8px 20px rgba(0,0,0,.22)}
+.digit:after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:#292929}
+.colon{font-size:clamp(45px,10vw,84px);font-weight:300;color:#d7d7d3;margin-top:-6px}
+.date{font-size:14px;text-align:center;color:#c6c6c1;letter-spacing:.5px}
+.weatherline{text-align:center;margin-top:11px;color:#a9b6a7;font-size:13px;min-height:18px}
+.section{background:#1a1a1a;border:1px solid #303030;border-radius:20px;padding:18px;margin-bottom:13px}
+.kicker{font-size:10px;letter-spacing:2px;color:#9a9a94;text-transform:uppercase;margin-bottom:7px}
+h2{font-size:17px;font-weight:600;margin:0 0 13px}
+.music{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.music p{margin:0;color:#aaa;font-size:12px;line-height:1.5}
+.yt{display:inline-block;white-space:nowrap;background:#f2f2ef;color:#171717;text-decoration:none;padding:13px 16px;border-radius:12px;font-weight:700;font-size:13px}
+.forecast{display:grid;grid-template-columns:repeat(7,minmax(76px,1fr));gap:8px;overflow-x:auto;padding:2px 1px 8px;-webkit-overflow-scrolling:touch}
+.day{background:#111;border:1px solid #333;border-radius:12px;padding:11px 8px;text-align:center;min-width:76px}
+.dayname{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.7px}
+.dayicon{font-size:22px;margin:9px 0}
+.daydesc{font-size:10px;color:#aaa;min-height:25px;line-height:1.25}
+.daytemps{font-size:12px;margin-top:8px;white-space:nowrap}
+.daytemps b{color:#eee}.daytemps span{color:#888;margin-left:5px}
+.rain{font-size:10px;color:#9fb9d1;margin-top:6px}
+.choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.choice{display:inline-block;padding:10px 12px;border:1px solid #444;border-radius:10px;color:#ddd;text-decoration:none;font-size:12px}
+.cityrow{display:flex;gap:8px;margin-top:12px}
+input{min-width:0;flex:1;background:#101010;color:#eee;border:1px solid #414141;border-radius:10px;padding:11px;font-size:13px}
+button{background:#303b32;color:#e8eee6;border:1px solid #4a594c;border-radius:10px;padding:10px 13px;font-weight:600}
+.note{font-size:10px;line-height:1.5;color:#777;margin-top:10px}
+.footer{text-align:center;color:#666;font-size:10px;padding:13px 0}
+@media(min-width:650px){body{padding:30px}.hero{padding:28px}.section{padding:22px}.flipclock{gap:12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="brand"><span class="dot"></span>KITCHEN HUB</div><button class="homebtn" onclick="goHome()">⌂ Início</button></header>
+<section class="hero">
+ <div class="topline"><span id="period">AGORA</span><span class="weather" id="weatherTop">--°</span></div>
+ <div class="flipclock">
+  <div class="digit" id="hour1">0</div><div class="digit" id="hour2">0</div>
+  <div class="colon">:</div>
+  <div class="digit" id="minute1">0</div><div class="digit" id="minute2">0</div>
+ </div>
+ <div class="date" id="date">Carregando data...</div>
+ <div class="weatherline" id="weatherText">Informe sua cidade para consultar a temperatura atual.</div>
+ <div class="cityrow">
+  <input id="city" type="text" value="São José, Santa Catarina" placeholder="Cidade" aria-label="Cidade">
+  <button onclick="loadWeather()">Atualizar</button>
+ </div>
+ <div class="note">A temperatura é consultada online. É necessária conexão com a internet.</div>
+</section>
+<section class="section">
+ <div class="kicker">Previsão do tempo</div>
+ <h2>Próximos 7 dias · São José, SC</h2>
+ <div id="forecast" class="forecast"><div class="small">Carregando previsão semanal...</div></div>
+ <div class="note" id="forecastUpdated">Previsão atualizada pela internet.</div>
+</section>
+<section class="section">
+ <div class="kicker">Som ambiente</div>
+ <h2>Música para acompanhar a cozinha</h2>
+ <div class="music">
+  <p>Abra o YouTube e escolha suas músicas, playlists ou shows favoritos.</p>
+  <a class="yt" target="_blank" rel="noopener" href="https://www.youtube.com/">Abrir YouTube ▶</a>
+ </div>
+ <div class="choices">
+  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=musica+ambiente+cozinha">Música ambiente</a>
+  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=mpb+playlist">MPB</a>
+  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=musicas+anos+80+90">Anos 80 / 90</a>
+  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=lofi+music">Lo-fi</a>
+  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=musica+romantica+playlist">Românticas</a>
+  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=k-pop+playlist">K-pop</a>
+ </div>
+ <div class="note">O YouTube pode ter limitações no Safari do iOS 10. Se não carregar, podemos testar uma alternativa de áudio compatível.</div>
+</section>
+<div class="footer">KITCHEN HUB · PAINEL MINIMALISTA</div>
+</div>
+<script>
+function pad(n){return n<10?'0'+n:String(n)}
+function tick(){
+ var d=new Date(), h=pad(d.getHours()), m=pad(d.getMinutes());
+ document.getElementById('hour1').innerHTML=h.charAt(0);
+ document.getElementById('hour2').innerHTML=h.charAt(1);
+ document.getElementById('minute1').innerHTML=m.charAt(0);
+ document.getElementById('minute2').innerHTML=m.charAt(1);
+ document.getElementById('period').innerHTML=d.getHours()<12?'BOM DIA':(d.getHours()<18?'BOA TARDE':'BOA NOITE');
+ var days=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+ var months=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+ document.getElementById('date').innerHTML=days[d.getDay()]+', '+d.getDate()+' de '+months[d.getMonth()]+' de '+d.getFullYear();
+}
+function xhr(url,done){
+ var x=new XMLHttpRequest();x.open('GET',url,true);x.onreadystatechange=function(){if(x.readyState===4){if(x.status>=200&&x.status<300){try{done(null,JSON.parse(x.responseText));}catch(e){done(e);}}else done(new Error('HTTP '+x.status));}};x.onerror=function(){done(new Error('Falha de conexão'));};x.send();
+}
+function loadWeather(){
+ var city=document.getElementById('city').value.replace(/^\s+|\s+$/g,'');
+ if(!city){document.getElementById('weatherText').innerHTML='Digite sua cidade para consultar a temperatura.';return;}
+ document.getElementById('weatherText').innerHTML='Consultando temperatura...';
+ var searchName = (city.toLowerCase().indexOf('são josé') !== -1 || city.toLowerCase().indexOf('sao jose') !== -1) ? 'São José' : city;
+ var url='https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(searchName)+'&count=10&language=pt&format=json';
+ xhr(url,function(err,data){
+  if(err||!data||!data.results||!data.results.length){document.getElementById('weatherText').innerHTML='Não foi possível localizar a cidade. Confira o nome e tente novamente.';return;}
+  var p=data.results[0];
+  if(searchName === 'São José'){
+   for(var i=0;i<data.results.length;i++){
+    var candidate=data.results[i];
+    if(candidate.country_code==='BR' && candidate.admin1 && candidate.admin1.toLowerCase().indexOf('santa catarina')!==-1){p=candidate;break;}
+   }
+  }
+  var wurl='https://api.open-meteo.com/v1/forecast?latitude='+p.latitude+'&longitude='+p.longitude+'&current_weather=true&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=7&timezone=auto';
+  xhr(wurl,function(e,w){
+   if(e||!w||!w.current_weather){document.getElementById('weatherText').innerHTML='Não foi possível consultar o clima agora.';return;}
+   var t=Math.round(w.current_weather.temperature);
+   document.getElementById('weatherTop').innerHTML=t+'°C';
+   document.getElementById('weatherText').innerHTML=t+'°C agora · '+p.name+(p.admin1?', '+p.admin1:'');
+   renderForecast(w.daily);
+   document.getElementById('forecastUpdated').innerHTML='Atualizado agora · Fonte: Open-Meteo';
+   try{localStorage.setItem('kh_city',city);}catch(ex){}
+  });
+ });
+}
+function weatherLabel(code){
+ if(code===0)return ['☀️','Ensolarado'];
+ if(code===1)return ['🌤️','Poucas nuvens'];
+ if(code===2)return ['⛅','Parcialmente nublado'];
+ if(code===3)return ['☁️','Nublado'];
+ if(code===45||code===48)return ['🌫️','Neblina'];
+ if(code===51||code===53||code===55)return ['🌦️','Garoa'];
+ if(code===56||code===57)return ['🌧️','Garoa congelante'];
+ if(code===61||code===63||code===65)return ['🌧️','Chuva'];
+ if(code===66||code===67)return ['🌧️','Chuva congelante'];
+ if(code===71||code===73||code===75||code===77)return ['❄️','Neve'];
+ if(code===80||code===81||code===82)return ['🌦️','Pancadas'];
+ if(code===85||code===86)return ['🌨️','Neve'];
+ if(code===95||code===96||code===99)return ['⛈️','Tempestade'];
+ return ['🌡️','Variável'];
+}
+function renderForecast(d){
+ if(!d||!d.time){document.getElementById('forecast').innerHTML='<div class="small">Previsão indisponível no momento.</div>';return;}
+ var names=['dom','seg','ter','qua','qui','sex','sáb'], out='';
+ for(var i=0;i<d.time.length;i++){
+  var parts=d.time[i].split('-'),dt=new Date(parts[0],parseInt(parts[1],10)-1,parseInt(parts[2],10));
+  var label=i===0?'Hoje':names[dt.getDay()];
+  var info=weatherLabel(d.weather_code[i]);
+  var rain=d.precipitation_probability_max&&d.precipitation_probability_max[i]!==null?d.precipitation_probability_max[i]+'% chuva':'';
+  out+='<div class="day"><div class="dayname">'+label+'</div><div class="dayicon">'+info[0]+'</div><div class="daydesc">'+info[1]+'</div><div class="daytemps"><b>'+Math.round(d.temperature_2m_max[i])+'°</b><span>'+Math.round(d.temperature_2m_min[i])+'°</span></div><div class="rain">'+rain+'</div></div>';
+ }
+ document.getElementById('forecast').innerHTML=out;
+}
+function goHome(){window.location.href=window.location.pathname+window.location.search;}
+tick();setInterval(tick,1000);
+loadWeather();
+</script>
+</body>
+</html>
