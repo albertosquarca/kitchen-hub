@@ -46,6 +46,39 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
 .choices{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
 .choice{display:inline-block;padding:11px 14px;border:1px solid #48515a;border-radius:10px;color:#e0e5e8;text-decoration:none;font-size:13px}
 .footer{text-align:center;color:#777e83;font-size:11px;padding:12px 0}
+
+
+.ytsearch{display:flex;gap:9px;margin:12px 0}
+.ytsearch input{flex:1;min-width:0}
+.ytsearch button{white-space:nowrap}
+.ytstatus{font-size:12px;color:#aeb6bc;min-height:18px;margin:8px 1px}
+.ytresults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.ytresult{display:flex;gap:10px;align-items:flex-start;background:#101214;border:1px solid #343a3f;border-radius:12px;padding:9px;color:#f1f2f3;text-align:left;cursor:pointer;min-width:0}
+.ytresult img{width:120px;max-width:38%;aspect-ratio:16/9;object-fit:cover;border-radius:7px;background:#25282b}
+.ytmeta{min-width:0;flex:1}
+.yttitle{font-size:13px;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ytchannel{font-size:11px;color:#9da7ae;margin-top:6px}
+.yttype{font-size:10px;color:#a9c9e2;margin-top:5px;text-transform:uppercase;letter-spacing:.6px}
+.ytresult.selected{border-color:#9bbbd0;background:#18212a}
+@media(max-width:700px){.ytresults{grid-template-columns:1fr}.ytresult img{width:112px}.ytsearch{flex-wrap:wrap}.ytsearch input{flex-basis:100%}}
+
+.playerbox{margin-top:14px;background:#080a0c;border:1px solid #343a3f;border-radius:14px;overflow:hidden}
+.playerhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;background:#141719}
+.playerhead strong{font-size:13px}
+.playerhint{font-size:11px;color:#9ba4aa;line-height:1.4;margin:10px 2px}
+.playerframe{position:relative;width:100%;aspect-ratio:16/9;background:#050607}
+.playerframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.playercontrols{display:flex;gap:8px;align-items:center;margin-top:10px}
+.playercontrols input{width:100%;flex:1}
+.playercontrols button{white-space:nowrap}
+.choice{cursor:pointer;background:#171b1e}
+.choice.active{background:#344451;border-color:#8caabd}
+@media (max-width:700px){
+ .playercontrols{flex-wrap:wrap}
+ .playercontrols input{flex-basis:100%}
+ .playerframe{min-height:180px}
+}
+
 @media (orientation:landscape) and (min-width:700px){
  body{padding:14px 28px 20px}
  .wrap{max-width:1240px}
@@ -100,22 +133,30 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
  <div id="forecast" class="forecast"><div class="small">Carregando previsão semanal...</div></div>
  <div class="note" id="forecastUpdated">Previsão atualizada pela internet.</div>
 </section>
-<section class="section">
- <div class="kicker">Som ambiente</div>
- <h2>Música para acompanhar a cozinha</h2>
- <div class="music">
-  <p>Abra o YouTube e escolha suas músicas, playlists ou shows favoritos.</p>
-  <a class="yt" target="_blank" rel="noopener" href="https://www.youtube.com/">Abrir YouTube ▶</a>
+<section class="section" id="musicSection">
+ <div class="kicker">YouTube integrado</div>
+ <h2>Pesquise qualquer vídeo</h2>
+ <p class="playerhint">Encontre receitas, tutoriais, músicas, dicas para casa e qualquer outro conteúdo do YouTube. Escolha um resultado para reproduzir aqui mesmo.</p>
+ <div class="ytsearch">
+  <input id="youtubeSearch" type="search" placeholder="O que você quer assistir?" aria-label="Pesquisar no YouTube">
+  <button id="youtubeSearchButton" onclick="searchYouTube()">Pesquisar</button>
  </div>
  <div class="choices">
-  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=musica+ambiente+cozinha">Música ambiente</a>
-  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=mpb+playlist">MPB</a>
-  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=musicas+anos+80+90">Anos 80 / 90</a>
-  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=lofi+music">Lo-fi</a>
-  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=musica+romantica+playlist">Românticas</a>
-  <a class="choice" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=k-pop+playlist">K-pop</a>
+  <button class="choice" onclick="quickSearch('receitas fáceis')">Receitas</button>
+  <button class="choice" onclick="quickSearch('músicas')">Músicas</button>
+  <button class="choice" onclick="quickSearch('K-pop')">K-pop</button>
+  <button class="choice" onclick="quickSearch('dicas para casa')">Dicas para casa</button>
+  <button class="choice" onclick="quickSearch('tutoriais')">Tutoriais</button>
  </div>
- <div class="note">O YouTube pode ter limitações no Safari do iOS 10. Se não carregar, podemos testar uma alternativa de áudio compatível.</div>
+ <div id="youtubeStatus" class="ytstatus" aria-live="polite">Digite um assunto e toque em Pesquisar.</div>
+ <div id="youtubeResults" class="ytresults"></div>
+ <div class="playerbox">
+  <div class="playerhead"><strong id="youtubeNowPlaying">▶ Player do YouTube</strong><button onclick="clearYouTube()">Limpar</button></div>
+  <div class="playerframe" id="playerFrame">
+   <div style="height:100%;min-height:190px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#aeb6bc;font-size:13px">Os vídeos escolhidos nos resultados serão reproduzidos aqui.</div>
+  </div>
+ </div>
+ <div class="note">A pesquisa usa o serviço privado do Kitchen Hub. A reprodução utiliza o player oficial do YouTube. Alguns vídeos podem ter incorporação desativada pelo próprio canal.</div>
 </section>
 <div class="footer">KITCHEN HUB · PAINEL MINIMALISTA</div>
 </div>
@@ -190,7 +231,80 @@ function renderForecast(d){
  }
  document.getElementById('forecast').innerHTML=out;
 }
+
+
+var YOUTUBE_API_ENDPOINT = 'https://kitchen-hub-api.albertosquarca.workers.dev';
+
+function searchYouTube(){
+ var input=document.getElementById('youtubeSearch');
+ var query=input.value.replace(/^\s+|\s+$/g,'');
+ var status=document.getElementById('youtubeStatus');
+ var results=document.getElementById('youtubeResults');
+ if(query.length<2){status.innerHTML='Digite pelo menos 2 caracteres.';return;}
+ status.innerHTML='Pesquisando no YouTube...';
+ results.innerHTML='';
+ var request=new XMLHttpRequest();
+ request.open('GET',YOUTUBE_API_ENDPOINT+'/search?q='+encodeURIComponent(query)+'&maxResults=10',true);
+ request.onreadystatechange=function(){
+  if(request.readyState!==4)return;
+  if(request.status>=200&&request.status<300){
+   var data;
+   try{data=JSON.parse(request.responseText);}catch(e){status.innerHTML='Resposta inválida do serviço.';return;}
+   if(!data.results||!data.results.length){status.innerHTML='Nenhum resultado encontrado.';return;}
+   status.innerHTML=data.total+' resultados para “'+escapeHTML(query)+'”. Toque em um para reproduzir.';
+   renderYouTubeResults(data.results);
+  }else{
+   var message='Não foi possível pesquisar.';
+   try{var err=JSON.parse(request.responseText);if(err.error)message=err.error+(err.details?' — '+err.details:'');}catch(e){}
+   status.innerHTML=escapeHTML(message);
+  }
+ };
+ request.onerror=function(){status.innerHTML='Falha de conexão. Verifique a internet e tente novamente.';};
+ request.send();
+}
+
+function quickSearch(query){
+ document.getElementById('youtubeSearch').value=query;
+ searchYouTube();
+}
+
+function escapeHTML(value){
+ return String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function renderYouTubeResults(items){
+ var htmlOut='';
+ for(var i=0;i<items.length;i++){
+  var item=items[i];
+  htmlOut+='<button class="ytresult" type="button" onclick="playYouTube('+JSON.stringify(item.id)+','+JSON.stringify(item.kind)+','+JSON.stringify(item.title)+')">';
+  htmlOut+='<img src="'+escapeHTML(item.thumbnail)+'" alt="" onerror="this.style.display=\\'none\\'">';
+  htmlOut+='<span class="ytmeta"><span class="yttitle">'+escapeHTML(item.title)+'</span>';
+  htmlOut+='<span class="ytchannel">'+escapeHTML(item.channel)+'</span>';
+  htmlOut+='<span class="yttype">'+(item.kind==='playlist'?'Playlist':'Vídeo')+'</span></span></button>';
+ }
+ document.getElementById('youtubeResults').innerHTML=htmlOut;
+}
+
+function playYouTube(id,kind,title){
+ var frame=document.getElementById('playerFrame');
+ var embed;
+ if(kind==='playlist'){
+  embed='https://www.youtube.com/embed/videoseries?list='+encodeURIComponent(id);
+ }else{
+  embed='https://www.youtube.com/embed/'+encodeURIComponent(id)+'?playsinline=0&rel=0';
+ }
+ frame.innerHTML='<iframe src="'+embed+'" title="YouTube player" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen"></iframe>';
+ document.getElementById('youtubeNowPlaying').innerHTML='▶ '+escapeHTML(title);
+}
+
+function clearYouTube(){
+ document.getElementById('playerFrame').innerHTML='<div style="height:100%;min-height:190px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#aeb6bc;font-size:13px">Escolha um vídeo nos resultados da pesquisa.</div>';
+ document.getElementById('youtubeNowPlaying').innerHTML='▶ Player do YouTube';
+}
+
 function goHome(){window.location.href=window.location.pathname+window.location.search;}
+var ytInput=document.getElementById('youtubeSearch');
+if(ytInput){ytInput.onkeydown=function(event){event=event||window.event;if(event.key==='Enter'||event.keyCode===13){searchYouTube();}};}
 tick();setInterval(tick,1000);
 loadWeather();
 </script>
