@@ -13,6 +13,20 @@ html,body{margin:0;min-height:100%;background:#101112;color:#f5f5f3;font-family:
 body{padding:18px 22px 26px}
 .wrap{max-width:1180px;margin:0 auto}
 header{display:flex;justify-content:space-between;align-items:center;margin:2px 0 16px}
+
+body.night{background:#050607;color:#c9cdd0}
+body.night .hero,body.night .section{background:#0c0e10;border-color:#202428}
+body.night .digit{background:#030405;border-color:#171a1d;color:#c6c9cc;box-shadow:none}
+body.night .date{color:#aeb4b9}
+body.night .weatherline{color:#899eac}
+body.night .day{background:#080a0b;border-color:#202428}
+body.night .dayname,body.night .daydesc{color:#92999e}
+body.night .homebtn,body.night .nightbtn{background:#171a1d;border-color:#30363b;color:#d9dde0}
+body.night .ytresult{background:#080a0b;border-color:#202428}
+body.night input{background:#080a0b;border-color:#30363b}
+.nightbtn{background:#25282b;color:#f2f2ef;border:1px solid #45494d;border-radius:10px;padding:10px 13px;font-size:12px;font-weight:600}
+.head-actions{display:flex;gap:8px;align-items:center}
+
 .brand{font-size:13px;letter-spacing:3px;font-weight:700;color:#d5d5d0}
 .dot{width:8px;height:8px;background:#a8c7df;border-radius:50%;display:inline-block;margin-right:8px}
 .homebtn{background:#25282b;color:#f2f2ef;border:1px solid #45494d;border-radius:10px;padding:10px 15px;font-size:13px;font-weight:600}
@@ -111,7 +125,7 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
 </head>
 <body>
 <div class="wrap">
-<header><div class="brand"><span class="dot"></span>KITCHEN HUB</div><button class="homebtn" onclick="goHome()">⌂ Início</button></header>
+<header><div class="brand"><span class="dot"></span>KITCHEN HUB</div><div class="head-actions"><button class="nightbtn" id="nightToggle" onclick="cycleNightMode()">Modo: Auto</button><button class="homebtn" onclick="goHome()">⌂ Início</button></div></header>
 <section class="hero">
  <div class="topline"><span id="period">AGORA</span><span class="weather" id="weatherTop">--°</span></div>
  <div class="flipclock">
@@ -150,7 +164,7 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
  </div>
  <div id="youtubeStatus" class="ytstatus" aria-live="polite">Digite um assunto e toque em Pesquisar.</div>
  <div id="youtubeResults" class="ytresults"></div>
- <div class="note">A pesquisa acontece dentro do Kitchen Hub. Os vídeos abrem no YouTube em uma nova aba do Safari. Para voltar, retorne à aba Kitchen Hub.</div>
+ <div class="note">A pesquisa acontece dentro do Kitchen Hub. Os vídeos abrem no YouTube pelo Safari. Para voltar ao painel, retorne ao Kitchen Hub pelo seletor de apps/abas do iPad.</div>
 </section>
 <div class="footer">KITCHEN HUB · PAINEL MINIMALISTA</div>
 </div>
@@ -330,10 +344,35 @@ function playYouTube(id,kind,title){
  document.body.removeChild(link);
 }
 
+
+function applyNightMode(mode){
+ var d=new Date();
+ var automatic=(d.getHours()>=20 || d.getHours()<6);
+ var night=(mode==='night') ? true : (mode==='day' ? false : automatic);
+ if(night){document.body.classList.add('night');}
+ else{document.body.classList.remove('night');}
+ var label=mode==='auto'?'Modo: Auto':(mode==='night'?'Modo: Noite':'Modo: Dia');
+ var button=document.getElementById('nightToggle');
+ if(button){button.innerHTML=label;}
+}
+function cycleNightMode(){
+ var current='auto';
+ try{current=localStorage.getItem('kitchenHubNightMode')||'auto';}catch(e){}
+ var next=current==='auto'?'night':(current==='night'?'day':'auto');
+ try{localStorage.setItem('kitchenHubNightMode',next);}catch(e){}
+ applyNightMode(next);
+}
+function updateAutomaticNightMode(){
+ var mode='auto';
+ try{mode=localStorage.getItem('kitchenHubNightMode')||'auto';}catch(e){}
+ applyNightMode(mode);
+}
+
 function goHome(){window.location.href=window.location.pathname+window.location.search;}
 var ytInput=document.getElementById('youtubeSearch');
 if(ytInput){ytInput.onkeydown=function(event){event=event||window.event;if(event.key==='Enter'||event.keyCode===13){searchYouTube();}};}
 tick();setInterval(tick,1000);
+updateAutomaticNightMode();setInterval(updateAutomaticNightMode,60000);
 loadWeather();
 </script>
 </body>
