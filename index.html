@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="theme-color" content="#101010">
-<title>Kitchen Hub</title>
+<title>Kitchen Hub 14.0</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#101112;color:#f5f5f3;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
@@ -164,9 +164,9 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
  </div>
  <div id="youtubeStatus" class="ytstatus" aria-live="polite">Digite um assunto e toque em Pesquisar.</div>
  <div id="youtubeResults" class="ytresults"></div>
- <div class="note">A pesquisa acontece dentro do Kitchen Hub. Os vídeos abrem no YouTube pelo Safari. Para voltar ao painel, retorne ao Kitchen Hub pelo seletor de apps/abas do iPad.</div>
+ <div class="note">A pesquisa acontece dentro do Kitchen Hub. Ao tocar em um vídeo, o YouTube abre nesta mesma aba. Para retornar ao painel, use Voltar no Safari.</div>
 </section>
-<div class="footer">KITCHEN HUB · PAINEL MINIMALISTA</div>
+<div class="footer">KITCHEN HUB 14.0 · PAINEL MINIMALISTA</div>
 </div>
 <script>
 function pad(n){return n<10?'0'+n:String(n)}
@@ -332,18 +332,10 @@ function playYouTube(id,kind,title){
   youtubeUrl='https://www.youtube.com/watch?v='+encodeURIComponent(id);
  }
 
- // Open a real link from the user's tap. Do not create an iframe
- // and do not redirect the Kitchen Hub tab if pop-ups are blocked.
- var link=document.createElement('a');
- link.href=youtubeUrl;
- link.target='_blank';
- link.rel='noopener';
- link.style.display='none';
- document.body.appendChild(link);
- link.click();
- document.body.removeChild(link);
+ // Navega na mesma aba, sem iframe e sem abrir uma nova aba.
+ // O usuário retorna ao Kitchen Hub pelo botão Voltar do Safari.
+ window.location.href=youtubeUrl;
 }
-
 
 function applyNightMode(mode){
  var d=new Date();
