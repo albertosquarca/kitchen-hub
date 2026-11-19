@@ -66,8 +66,8 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
 .playerhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;background:#141719}
 .playerhead strong{font-size:13px}
 .playerhint{font-size:11px;color:#9ba4aa;line-height:1.4;margin:10px 2px}
-.playerframe{position:relative;width:100%;aspect-ratio:16/9;background:#050607}
-.playerframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.playerframe{position:relative;width:100%;height:0;padding-bottom:56.25%;background:#050607;overflow:hidden}
+.playerframe iframe{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;border:0}
 .playercontrols{display:flex;gap:8px;align-items:center;margin-top:10px}
 .playercontrols input{width:100%;flex:1}
 .playercontrols button{white-space:nowrap}
@@ -76,7 +76,7 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
 @media (max-width:700px){
  .playercontrols{flex-wrap:wrap}
  .playercontrols input{flex-basis:100%}
- .playerframe{min-height:180px}
+ .playerframe{padding-bottom:56.25%;min-height:0}
 }
 
 @media (orientation:landscape) and (min-width:700px){
