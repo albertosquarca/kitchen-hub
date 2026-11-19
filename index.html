@@ -136,7 +136,7 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
 <section class="section" id="musicSection">
  <div class="kicker">YouTube integrado</div>
  <h2>Pesquise qualquer vídeo</h2>
- <p class="playerhint">Encontre receitas, tutoriais, músicas, dicas para casa e qualquer outro conteúdo do YouTube. Escolha um resultado para reproduzir aqui mesmo.</p>
+ <p class="playerhint">Pesquise receitas, tutoriais, músicas, dicas para casa e qualquer outro conteúdo do YouTube. Toque em um resultado para abrir o vídeo no YouTube.</p>
  <div class="ytsearch">
   <input id="youtubeSearch" type="search" placeholder="O que você quer assistir?" aria-label="Pesquisar no YouTube">
   <button id="youtubeSearchButton" onclick="searchYouTube()">Pesquisar</button>
@@ -150,13 +150,7 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
  </div>
  <div id="youtubeStatus" class="ytstatus" aria-live="polite">Digite um assunto e toque em Pesquisar.</div>
  <div id="youtubeResults" class="ytresults"></div>
- <div class="playerbox">
-  <div class="playerhead"><strong id="youtubeNowPlaying">▶ YouTube</strong><button onclick="goHome()">Início</button></div>
-  <div class="playerframe" id="playerFrame">
-   <div style="height:100%;min-height:190px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#aeb6bc;font-size:13px">Selecione um resultado para abrir o vídeo no YouTube. O Kitchen Hub permanecerá nesta aba.</div>
-  </div>
- </div>
- <div class="note">A pesquisa usa o serviço privado do Kitchen Hub. Ao selecionar um vídeo, o YouTube abre em outra aba para reproduzir pelo Safari. Volte à aba Kitchen Hub para continuar.</div>
+ <div class="note">A pesquisa acontece dentro do Kitchen Hub. Os vídeos abrem no YouTube em uma nova aba do Safari. Para voltar, retorne à aba Kitchen Hub.</div>
 </section>
 <div class="footer">KITCHEN HUB · PAINEL MINIMALISTA</div>
 </div>
@@ -323,16 +317,18 @@ function playYouTube(id,kind,title){
  }else{
   youtubeUrl='https://www.youtube.com/watch?v='+encodeURIComponent(id);
  }
- document.getElementById('youtubeNowPlaying').innerHTML='▶ Abrindo: '+escapeHTML(title);
- // Open directly from the user's tap so Safari does not treat it as a popup.
- var opened=window.open(youtubeUrl,'_blank');
- if(!opened){
-  // Fallback for browsers that block new tabs. The Home button remains
-  // available on the Kitchen Hub page when opened from its home-screen icon.
-  window.location.href=youtubeUrl;
- }
-}
 
+ // Open a real link from the user's tap. Do not create an iframe
+ // and do not redirect the Kitchen Hub tab if pop-ups are blocked.
+ var link=document.createElement('a');
+ link.href=youtubeUrl;
+ link.target='_blank';
+ link.rel='noopener';
+ link.style.display='none';
+ document.body.appendChild(link);
+ link.click();
+ document.body.removeChild(link);
+}
 
 function goHome(){window.location.href=window.location.pathname+window.location.search;}
 var ytInput=document.getElementById('youtubeSearch');
