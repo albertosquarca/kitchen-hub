@@ -273,16 +273,47 @@ function escapeHTML(value){
 }
 
 function renderYouTubeResults(items){
- var htmlOut='';
+ var container=document.getElementById('youtubeResults');
+ container.innerHTML='';
  for(var i=0;i<items.length;i++){
-  var item=items[i];
-  htmlOut+='<button class="ytresult" type="button" onclick="playYouTube('+JSON.stringify(item.id)+','+JSON.stringify(item.kind)+','+JSON.stringify(item.title)+')">';
-  htmlOut+='<img src="'+escapeHTML(item.thumbnail)+'" alt="">';
-  htmlOut+='<span class="ytmeta"><span class="yttitle">'+escapeHTML(item.title)+'</span>';
-  htmlOut+='<span class="ytchannel">'+escapeHTML(item.channel)+'</span>';
-  htmlOut+='<span class="yttype">'+(item.kind==='playlist'?'Playlist':'Vídeo')+'</span></span></button>';
+  (function(item){
+   var button=document.createElement('button');
+   button.className='ytresult';
+   button.type='button';
+
+   var img=document.createElement('img');
+   img.src=item.thumbnail || '';
+   img.alt='';
+   img.onerror=function(){this.style.display='none';};
+
+   var meta=document.createElement('span');
+   meta.className='ytmeta';
+
+   var title=document.createElement('span');
+   title.className='yttitle';
+   title.appendChild(document.createTextNode(item.title || ''));
+
+   var channel=document.createElement('span');
+   channel.className='ytchannel';
+   channel.appendChild(document.createTextNode(item.channel || ''));
+
+   var type=document.createElement('span');
+   type.className='yttype';
+   type.appendChild(document.createTextNode(item.kind==='playlist'?'Playlist':'Vídeo'));
+
+   meta.appendChild(title);
+   meta.appendChild(channel);
+   meta.appendChild(type);
+   button.appendChild(img);
+   button.appendChild(meta);
+
+   button.onclick=function(){
+    playYouTube(item.id,item.kind,item.title);
+   };
+
+   container.appendChild(button);
+  })(items[i]);
  }
- document.getElementById('youtubeResults').innerHTML=htmlOut;
 }
 
 function playYouTube(id,kind,title){
