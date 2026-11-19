@@ -151,12 +151,12 @@ h2{font-size:19px;font-weight:600;margin:0 0 13px}
  <div id="youtubeStatus" class="ytstatus" aria-live="polite">Digite um assunto e toque em Pesquisar.</div>
  <div id="youtubeResults" class="ytresults"></div>
  <div class="playerbox">
-  <div class="playerhead"><strong id="youtubeNowPlaying">▶ Player do YouTube</strong><button onclick="clearYouTube()">Limpar</button></div>
+  <div class="playerhead"><strong id="youtubeNowPlaying">▶ YouTube</strong><button onclick="goHome()">Início</button></div>
   <div class="playerframe" id="playerFrame">
-   <div style="height:100%;min-height:190px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#aeb6bc;font-size:13px">Os vídeos escolhidos nos resultados serão reproduzidos aqui.</div>
+   <div style="height:100%;min-height:190px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#aeb6bc;font-size:13px">Selecione um resultado para abrir o vídeo no YouTube. O Kitchen Hub permanecerá nesta aba.</div>
   </div>
  </div>
- <div class="note">A pesquisa usa o serviço privado do Kitchen Hub. A reprodução utiliza o player oficial do YouTube. Alguns vídeos podem ter incorporação desativada pelo próprio canal.</div>
+ <div class="note">A pesquisa usa o serviço privado do Kitchen Hub. Ao selecionar um vídeo, o YouTube abre em outra aba para reproduzir pelo Safari. Volte à aba Kitchen Hub para continuar.</div>
 </section>
 <div class="footer">KITCHEN HUB · PAINEL MINIMALISTA</div>
 </div>
@@ -317,21 +317,22 @@ function renderYouTubeResults(items){
 }
 
 function playYouTube(id,kind,title){
- var frame=document.getElementById('playerFrame');
- var embed;
+ var youtubeUrl;
  if(kind==='playlist'){
-  embed='https://www.youtube.com/embed/videoseries?list='+encodeURIComponent(id);
+  youtubeUrl='https://www.youtube.com/playlist?list='+encodeURIComponent(id);
  }else{
-  embed='https://www.youtube.com/embed/'+encodeURIComponent(id)+'?playsinline=0&rel=0';
+  youtubeUrl='https://www.youtube.com/watch?v='+encodeURIComponent(id);
  }
- frame.innerHTML='<iframe src="'+embed+'" title="YouTube player" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen"></iframe>';
- document.getElementById('youtubeNowPlaying').innerHTML='▶ '+escapeHTML(title);
+ document.getElementById('youtubeNowPlaying').innerHTML='▶ Abrindo: '+escapeHTML(title);
+ // Open directly from the user's tap so Safari does not treat it as a popup.
+ var opened=window.open(youtubeUrl,'_blank');
+ if(!opened){
+  // Fallback for browsers that block new tabs. The Home button remains
+  // available on the Kitchen Hub page when opened from its home-screen icon.
+  window.location.href=youtubeUrl;
+ }
 }
 
-function clearYouTube(){
- document.getElementById('playerFrame').innerHTML='<div style="height:100%;min-height:190px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#aeb6bc;font-size:13px">Escolha um vídeo nos resultados da pesquisa.</div>';
- document.getElementById('youtubeNowPlaying').innerHTML='▶ Player do YouTube';
-}
 
 function goHome(){window.location.href=window.location.pathname+window.location.search;}
 var ytInput=document.getElementById('youtubeSearch');
