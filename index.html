@@ -277,7 +277,7 @@ function renderYouTubeResults(items){
  for(var i=0;i<items.length;i++){
   var item=items[i];
   htmlOut+='<button class="ytresult" type="button" onclick="playYouTube('+JSON.stringify(item.id)+','+JSON.stringify(item.kind)+','+JSON.stringify(item.title)+')">';
-  htmlOut+='<img src="'+escapeHTML(item.thumbnail)+'" alt="" onerror="this.style.display=\\'none\\'">';
+  htmlOut+='<img src="'+escapeHTML(item.thumbnail)+'" alt="">';
   htmlOut+='<span class="ytmeta"><span class="yttitle">'+escapeHTML(item.title)+'</span>';
   htmlOut+='<span class="ytchannel">'+escapeHTML(item.channel)+'</span>';
   htmlOut+='<span class="yttype">'+(item.kind==='playlist'?'Playlist':'Vídeo')+'</span></span></button>';
